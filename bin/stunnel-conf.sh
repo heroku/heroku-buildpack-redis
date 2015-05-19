@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-set -x
-
 URLS=${REDIS_URLS:-REDIS_URL}
 
 mkdir -p /app/vendor/stunnel/var/run/stunnel/
