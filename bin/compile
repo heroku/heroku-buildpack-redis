@@ -26,7 +26,7 @@ function package_download() {
   stack="$4"
 
   mkdir -p $location
-  package="https://${S3_BUCKET}.s3.amazonaws.com/$stack/$engine-$version.tgz"
+  package="https://${S3_BUCKET}.s3.amazonaws.com/$stack/$engine-$version.tar.gz"
   curl $package -s -o - | tar xzf - -C $location
 }
 
