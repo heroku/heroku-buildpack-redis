@@ -4,7 +4,7 @@
 # Configure environment
 set -e            # fail fast
 set -o pipefail   # don't ignore exit codes when piping output
-# set -x          # enable debugging
+set -x          # enable debugging
 
 # Functions
 function indent() {
