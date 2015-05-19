@@ -19,7 +19,7 @@ EOFEOF
 for URL in $URLS
 do
   eval URL_VALUE=\$$URL
-  PARTS=$(echo $URL_VALUE | perl -lne 'print "$1 $2 $3 $4 $5 $6 $7" if /^([^:]+)::\/\/([^:]+):([^@]+)@(.*?):(.*?)\/(.*?)(\\?.*)?$/')
+  PARTS=$(echo $URL_VALUE | perl -lne 'print "$1 $2 $3 $4 $5 $6 $7" if /^([^:]+):\/\/([^:]+):([^@]+)@(.*?):(.*?)(\/(.*?)(\\?.*))?$/')
   URI=( $PARTS )
   SCHEME=${URI[0]}
   USER=${URI[1]}
