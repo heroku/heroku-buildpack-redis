@@ -21,21 +21,21 @@ do
   eval URL_VALUE=\$$URL
   PARTS=$(echo $URL_VALUE | perl -lne 'print "$1 $2 $3 $4 $5 $6 $7" if /^([^:]+):\/\/([^:]+):([^@]+)@(.*?):(.*?)(\/(.*?)(\\?.*))?$/')
   URI=( $PARTS )
-  SCHEME=${URI[0]}
-  USER=${URI[1]}
-  PASS=${URI[2]}
-  HOST=${URI[3]}
-  PORT=${URI[4]}
-  PATH=${URI[5]}
+  URI_SCHEME=${URI[0]}
+  URI_USER=${URI[1]}
+  URI_PASS=${URI[2]}
+  URI_HOST=${URI[3]}
+  URI_PORT=${URI[4]}
+  URI_PATH=${URI[5]}
 
   echo "Setting ${URL}_STUNNEL config var"
-  export ${URL}_STUNNEL=$SCHEME://$USER:$PASS@127.0.0.1:$PORT/$PATH
+  export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:$URI_PORT/$URI_PATH
 
   cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
 [$URL]
 client = yes
-accept = 127.0.0.1:$PORT
-connect = $HOST:$PORT
+accept = 127.0.0.1:$URI_PORT
+connect = $URI_HOST:$URI_PORT
 retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
 EOFEOF
 done
