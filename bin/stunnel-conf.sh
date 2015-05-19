@@ -31,12 +31,12 @@ do
   export ${URL}_STUNNEL=$SCHEME://$USER:$PASS@127.0.0.1:$PORT/$PATH
 
   cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
-  [$URL]
-  client = yes
-  accept = 127.0.0.1:$PORT
-  connect = $HOST:$PORT
-  retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
-  EOFEOF
+[$URL]
+client = yes
+accept = 127.0.0.1:$PORT
+connect = $HOST:$PORT
+retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
+EOFEOF
 
   let "n += 1"
 done
