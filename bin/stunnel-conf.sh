@@ -25,15 +25,16 @@ do
   URI_HOST=${URI[3]}
   URI_PORT=${URI[4]}
   URI_PATH=${URI[5]}
+  STUNNEL_PORT=$((URI_PORT + 1))
 
   echo "Setting ${URL}_STUNNEL config var"
-  export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:$URI_PORT/$URI_PATH
+  export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:$STUNNEL_PORT/$URI_PATH
 
   cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
 [$URL]
 client = yes
 accept = 127.0.0.1:$URI_PORT
-connect = $URI_HOST:$URI_PORT
+connect = $URI_HOST:$STUNNEL_PORT
 retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
 EOFEOF
 done
