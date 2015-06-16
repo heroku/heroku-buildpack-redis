@@ -1,31 +1,35 @@
 # Heroku buildpack: Redis
 
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) that
-allows one to stunnel in a dyno alongside application code.
-It is meant to be used in conjunction with other buildpacks as part of a
-[multi-buildpack](https://github.com/ddollar/heroku-buildpack-multi).
-
-The primary use of this buildpack is to allow secure connection
-to Redis database from a dyno, via stunnel.
-
-It uses [stunnel](http://stunnel.org/).
+allows an application to use an [stunnel](http://stunnel.org) to connect securely to
+Heroku Redis.  It is meant to be used in conjunction with other buildpacks
+as part of [multi-buildpack](https://github.com/ddollar/heroku-buildpack-multi).
 
 ## Usage
 
-Example usage:
-
-    $ ls -a
-    .buildpacks  Gemfile  Gemfile.lock  Procfile  config/  config.ru
+In your application, you will need to make sure that you set your main buildpack as multi-buildpack:
 
     $ heroku config:add BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-multi.git
 
+You'll then need to create a `.buildpacks` file at the root of your application directory.  The
+[redis-buildpack](#) should be added along with the buildpack associated with the language that
+was used to build your application.  In this example, the app was written in Ruby:
+
     $ cat .buildpacks
-    https://github.com/heroku/heroku-buildpack-redis.git#0.1
+    https://github.com/heroku/heroku-buildpack-redis.git
     https://github.com/heroku/heroku-buildpack-ruby.git
+
+For each process that should connect to Redis securely, you will need to preface the command in
+your `Procfile` with `bin/start-stunnel`. In this example, we want the `web` process to use
+a secure connection to Heroku Redis.  The `worker` process doesn't interact with Redis, so
+`bin/start-stunnel` was not included:
 
     $ cat Procfile
     web:    bin/start-stunnel bundle exec unicorn -p $PORT -c ./config/unicorn.rb -E $RACK_ENV
     worker: bundle exec rake worker
+
+We're then ready to deploy to Heroku with an encrypted connection between the dynos and Heroku
+Redis:
 
     $ git push heroku master
     ...
@@ -45,14 +49,15 @@ Example usage:
     -----> Installing dependencies using Bundler version 1.7.12
     ...
 
-The buildpack will install and configure stunnel to connect to
-`REDIS_URL` over a SSL connection. Prepend `bin/start-stunnel`
+## Configuration
+
+The buildpack will install and configure stunnel to connect to `REDIS_URL` over a SSL connection. Prepend `bin/start-stunnel`
 to any process in the Procfile to run stunnel alongside that process.
 
 
-## Multiple Databases
+### Multiple Redis Instances
 
-It is possible to connect to multiple databases through stunnel by setting
-`STUNNEL_URLS` to a list of config vars. Example:
+If your application needs to connect to multiple Heroku Redis instances securely, you can set the
+`STUNNEL_URLS` config var to a list of config vars associated with the application:
 
     $ heroku config:add STUNNEL_URLS="REDIS_URL HEROKU_REDIS_ROSE_URL"
