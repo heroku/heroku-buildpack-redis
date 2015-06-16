@@ -68,7 +68,7 @@ config-gen() {
   at config-gen-end
 
   # Overwrite config vars with stunnel targets
-  URLS=${REDIS_URLS:-REDIS_URL `compgen -v HEROKU_REDIS`}
+  URLS=${REDIS_URLS:-REDIS_URL `compgen -v HEROKU_REDIS | grep -v STUNNEL`}
 
   for URL in $URLS; do
     at "config-gen-override $URL"
