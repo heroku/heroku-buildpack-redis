@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 URLS=${REDIS_URLS:-REDIS_URL `compgen -v HEROKU_REDIS`}
+n=1
 
 mkdir -p /app/vendor/stunnel/var/run/stunnel/
 
@@ -27,15 +28,17 @@ do
   STUNNEL_PORT=$((URI_PORT + 1))
 
   echo "Setting ${URL}_STUNNEL config var"
-  export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:$STUNNEL_PORT
+  export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:637${n}
 
   cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
 [$URL]
 client = yes
-accept = 127.0.0.1:$URI_PORT
+accept = 127.0.0.1:637${n}
 connect = $URI_HOST:$STUNNEL_PORT
 retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
 EOFEOF
+
+  let "n += 1"
 done
 
 chmod go-rwx /app/vendor/stunnel/*
