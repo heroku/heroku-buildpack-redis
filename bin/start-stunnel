@@ -68,7 +68,7 @@ config-gen() {
   at config-gen-end
 
   # Overwrite config vars with stunnel targets
-  URLS=${STUNNEL_URLS:-URL}
+  URLS=${REDIS_URLS:-REDIS_URL}
 
   for URL in $URLS; do
     at "config-gen-override $URL"
