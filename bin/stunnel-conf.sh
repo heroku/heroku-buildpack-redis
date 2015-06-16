@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+REDIS_URLS=${REDIS_URLS:-`compgen -v HEROKU_REDIS`}
 URLS=${REDIS_URLS:-REDIS_URL}
 
 mkdir -p /app/vendor/stunnel/var/run/stunnel/

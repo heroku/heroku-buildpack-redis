@@ -58,6 +58,6 @@ to any process in the Procfile to run stunnel alongside that process.
 ### Multiple Redis Instances
 
 If your application needs to connect to multiple Heroku Redis instances securely, you can set the
-`STUNNEL_URLS` config var to a list of config vars associated with the application:
+`REDIS_URLS` config var to a list of config vars associated with the application:
 
     $ heroku config:add REDIS_URLS="REDIS_URL HEROKU_REDIS_ROSE_URL"
