@@ -34,7 +34,11 @@ function package_download() {
 unset GIT_DIR
 
 # Version
-STUNNEL_VERSION="5.17"
+if [ "$STACK" == "cedar-14" ]; then
+  STUNNEL_VERSION="5.17"
+else
+  STUNNEL_VERSION="5.02"
+fi
 
 # Bucket
 S3_BUCKET="heroku-buildpack-stunnel"
