@@ -15,10 +15,6 @@ function indent() {
   esac
 }
 
-function set-env (){
-  echo "export $1=$2" >> $PROFILE_PATH
-}
-
 function package_download() {
   engine="$1"
   version="$2"
