@@ -6,53 +6,12 @@ set -e            # fail fast
 set -o pipefail   # don't ignore exit codes when piping output
 # set -x            # enable debugging
 
-# Functions
-function indent() {
-  c='s/^/       /'
-  case $(uname) in
-    Darwin) sed -l "$c";;
-    *)      sed -u "$c";;
-  esac
-}
-
-function package_download() {
-  engine="$1"
-  version="$2"
-  location="$3"
-  stack="$4"
-
-  mkdir -p $location
-  package="https://${S3_BUCKET}.s3.amazonaws.com/$stack/$engine-$version.tar.gz"
-  curl $package -s -o - | tar xzf - -C $location
-}
-
 # Clean up leaking environment
 unset GIT_DIR
 
-# Version
-if [ "$STACK" == "cedar-14" ]; then
-  STUNNEL_VERSION="5.17"
-else
-  STUNNEL_VERSION="5.02"
-fi
-
-# Bucket
-S3_BUCKET="heroku-buildpack-stunnel"
-
 # Directories
 BUILD_DIR=$1
-CACHE_DIR=$2
 BUILDPACK_DIR="$(dirname $(dirname $0))"
-VENDORED_STUNNEL="vendor/stunnel"
-
-echo "Using stunnel version: ${STUNNEL_VERSION}" | indent
-echo "Using stack version: ${STACK}" | indent
-
-# Vendor stunnel into the slug
-PATH="$BUILD_DIR/$VENDORED_STUNNEL/bin:$PATH"
-echo "-----> Fetching and vendoring stunnel"
-mkdir -p "$BUILD_DIR/$VENDORED_STUNNEL"
-package_download "stunnel" "${STUNNEL_VERSION}" "${BUILD_DIR}/${VENDORED_STUNNEL}" "${STACK}"
 
 echo "-----> Moving the configuration generation script into app/bin"
 mkdir -p $BUILD_DIR/bin
