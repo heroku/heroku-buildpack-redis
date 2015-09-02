@@ -7,6 +7,8 @@ mkdir -p /app/vendor/stunnel/var/run/stunnel/
 cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
 foreground = yes
 
+pid = /app/vendor/stunnel/stunnel4.pid
+
 options = NO_SSLv2
 options = SINGLE_ECDH_USE
 options = SINGLE_DH_USE
