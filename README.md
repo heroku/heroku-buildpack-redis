@@ -2,24 +2,27 @@
 
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) that
 allows an application to use an [stunnel](http://stunnel.org) to connect securely to
-Heroku Redis.  It is meant to be used in conjunction with other buildpacks
-as part of [multi-buildpack](https://github.com/ddollar/heroku-buildpack-multi).
+Heroku Redis.  It is meant to be used in conjunction with other buildpacks.
 
 ## Usage
 
-In your application, you will need to make sure that you set your main buildpack as multi-buildpack:
+First you need to set this buildpack as your initial buildpack with:
 
-    $ heroku config:add BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-multi.git
+```console
+$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-redis.git
+```
 
-You'll then need to create a `.buildpacks` file at the root of your application directory.  The
-[redis-buildpack](#) should be added along with the buildpack associated with the language that
-was used to build your application.  In this example, the app was written in Ruby:
+Then you can add other buildpack(s) to compile your code like so:
 
-    $ cat .buildpacks
-    https://github.com/heroku/heroku-buildpack-redis.git
-    https://github.com/heroku/heroku-buildpack-ruby.git
+```console
+$ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-ruby.git
+```
 
-For each process that should connect to Redis securely, you will need to preface the command in
+Choose the correct buildpack(s) for the language(s) used in your application.
+
+For more information on using multiple buildpacks check out [this devcenter article](https://devcenter.heroku.com/articles/using-multiple-buildpacks-for-an-app).
+
+Next, for each process that should connect to Redis securely, you will need to preface the command in
 your `Procfile` with `bin/start-stunnel`. In this example, we want the `web` process to use
 a secure connection to Heroku Redis.  The `worker` process doesn't interact with Redis, so
 `bin/start-stunnel` was not included:
