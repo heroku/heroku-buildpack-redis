@@ -2,6 +2,13 @@
 URLS=${REDIS_STUNNEL_URLS:-REDIS_URL `compgen -v HEROKU_REDIS`}
 n=1
 
+# Enable this option to prevent stunnel from using SSLv3 with cedar-10
+if [ -z "${STUNNEL_FORCE_TLS}" ]; then
+  STUNNEL_FORCE_SSL_VERSION=""
+else
+  STUNNEL_FORCE_SSL_VERSION="sslVersion = TLSv1"
+fi
+
 mkdir -p /app/vendor/stunnel/var/run/stunnel/
 
 cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
@@ -14,6 +21,7 @@ options = SINGLE_ECDH_USE
 options = SINGLE_DH_USE
 socket = r:TCP_NODELAY=1
 options = NO_SSLv3
+${STUNNEL_FORCE_SSL_VERSION}
 ciphers = HIGH:!ADH:!AECDH:!LOW:!EXP:!MD5:!3DES:!SRP:!PSK:@STRENGTH
 EOFEOF
 

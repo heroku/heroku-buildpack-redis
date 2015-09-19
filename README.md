@@ -57,6 +57,12 @@ Redis:
 The buildpack will install and configure stunnel to connect to `REDIS_URL` over a SSL connection. Prepend `bin/start-stunnel`
 to any process in the Procfile to run stunnel alongside that process.
 
+### Stunnel settings
+
+Some settings are configurable through app config vars at runtime:
+
+- ``STUNNEL_ENABLED``: Default to true, enable or disable stunnel.
+- ``STUNNEL_FORCE_TLS``: Default is unset. Set this var, to force TLSv1 on cedar-10.
 
 ### Multiple Redis Instances
 
