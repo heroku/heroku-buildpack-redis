@@ -19,7 +19,6 @@ for STUNNEL_URL in $STUNNEL_URLS; do
   eval STUNNEL_URL_VALUE=\$$STUNNEL_URL
   eval "VAR_NAME=${STUNNEL_URL}_STUNNEL"
   if [[ $STUNNEL_URL_VALUE == "redis://"* ]]; then
-    echo REDIS URL = $STUNNEL_URL_VALUE
     DB=$(echo $STUNNEL_URL_VALUE | perl -lne 'print "$1 $2 $3 $4" if /^redis:\/\/([^:]+):([^@]+)@(.*?):(.*?)$/')
     DB_URI=( $DB )
     DB_USER="${DB_URI[0]}"
