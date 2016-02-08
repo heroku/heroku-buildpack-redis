@@ -31,7 +31,7 @@ for STUNNEL_URL in $STUNNEL_URLS; do
   else
     eval "export ${STUNNEL_URL}_STUNNEL=127.0.0.1:600${n}"
   fi
-  eval echo "Setting $VAR_NAME config var to \$$VAR_NAME pointing at ${STUNNEL_URL_VALUE}"
+  eval echo "Setting $VAR_NAME config var to listen on ${STUNNEL_URL_VALUE}"
   cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
 [$STUNNEL_URL_VALUE]
 client = yes
