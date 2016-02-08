@@ -31,6 +31,11 @@ a secure connection to Heroku Redis.  The `worker` process doesn't interact with
     web:    bin/start-stunnel bundle exec unicorn -p $PORT -c ./config/unicorn.rb -E $RACK_ENV
     worker: bundle exec rake worker
 
+To wrap your console in stunnel, you should use bin/start-stunnel-interactive, which won't run your command in the background, so stdin/stout still work.
+    $ cat Procfile
+    console:    bin/start-stunnel-interactive bundle exec rails console
+
+
 We're then ready to deploy to Heroku with an encrypted connection between the dynos and Heroku
 Redis:
 
@@ -38,7 +43,7 @@ Redis:
     ...
     -----> Fetching custom git buildpack... done
     -----> Multipack app detected
-    =====> Downloading Buildpack: https://github.com/heroku/heroku-buildpack-redis.git
+    =====> Downloading Buildpack: https://github.com/PeriscopeData/heroku-buildpack-redis.git
     =====> Detected Framework: stunnel
            Using stunnel version: 5.02
            Using stack version: cedar
