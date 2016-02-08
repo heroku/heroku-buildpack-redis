@@ -1,51 +1,42 @@
 #!/usr/bin/env bash
-URLS=${REDIS_STUNNEL_URLS:-REDIS_URL `compgen -v HEROKU_REDIS`}
 n=1
-
-# Enable this option to prevent stunnel from using SSLv3 with cedar-10
-if [ -z "${STUNNEL_FORCE_TLS}" ]; then
-  STUNNEL_FORCE_SSL_VERSION=""
-else
-  STUNNEL_FORCE_SSL_VERSION="sslVersion = TLSv1"
-fi
-
+set -e
 mkdir -p /app/vendor/stunnel/var/run/stunnel/
 
 cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
-foreground = yes
-
 pid = /app/vendor/stunnel/stunnel4.pid
-
+foreground = yes
 options = NO_SSLv2
 options = SINGLE_ECDH_USE
 options = SINGLE_DH_USE
 socket = r:TCP_NODELAY=1
 options = NO_SSLv3
-${STUNNEL_FORCE_SSL_VERSION}
+sslVersion = TLSv1
 ciphers = HIGH:!ADH:!AECDH:!LOW:!EXP:!MD5:!3DES:!SRP:!PSK:@STRENGTH
 EOFEOF
 
-for URL in $URLS
-do
-  eval URL_VALUE=\$$URL
-  PARTS=$(echo $URL_VALUE | perl -lne 'print "$1 $2 $3 $4 $5 $6 $7" if /^([^:]+):\/\/([^:]+):([^@]+)@(.*?):(.*?)(\/(.*?)(\\?.*))?$/')
-  URI=( $PARTS )
-  URI_SCHEME=${URI[0]}
-  URI_USER=${URI[1]}
-  URI_PASS=${URI[2]}
-  URI_HOST=${URI[3]}
-  URI_PORT=${URI[4]}
-  STUNNEL_PORT=$((URI_PORT + 1))
-
-  echo "Setting ${URL}_STUNNEL config var"
-  export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:637${n}
-
+for STUNNEL_URL in $STUNNEL_URLS; do
+  eval STUNNEL_URL_VALUE=\$$STUNNEL_URL
+  eval "VAR_NAME=${STUNNEL_URL}_STUNNEL"
+  if [[ $STUNNEL_URL_VALUE == "redis://"* ]]; then
+    echo REDIS URL = $STUNNEL_URL_VALUE
+    DB=$(echo $STUNNEL_URL_VALUE | perl -lne 'print "$1 $2 $3 $4" if /^redis:\/\/([^:]+):([^@]+)@(.*?):(.*?)$/')
+    DB_URI=( $DB )
+    DB_USER="${DB_URI[0]}"
+    DB_PASS="${DB_URI[1]}"
+    DB_HOST="${DB_URI[2]}"
+    DB_PORT="$(( DB_URI[3] + 1 )) "
+    eval STUNNEL_URL_VALUE="$DB_HOST:$DB_PORT"
+    eval "export ${STUNNEL_URL}_STUNNEL=redis://${DB_USER}:${DB_PASS}@127.0.0.1:600${n}"
+  else
+    eval "export ${STUNNEL_URL}_STUNNEL=127.0.0.1:600${n}"
+  fi
+  eval echo "Setting $VAR_NAME config var to \$$VAR_NAME pointing at ${STUNNEL_URL_VALUE}"
   cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
-[$URL]
+[$STUNNEL_URL_VALUE]
 client = yes
-accept = 127.0.0.1:637${n}
-connect = $URI_HOST:$STUNNEL_PORT
-retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
+accept = 127.0.0.1:600${n}
+connect = $STUNNEL_URL_VALUE
 EOFEOF
 
   let "n += 1"
