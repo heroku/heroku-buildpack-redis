@@ -113,7 +113,7 @@ app-start() {
     at "$name-start"
     
     
-    # Start child in the background. This is before the trap because
+    # Start child in the foreground (for interactive mode). This is before the trap because
     # the app needs to be able to receive when the dyno broadcasts
     # SIGTERM on shutdown.
     "$@"
