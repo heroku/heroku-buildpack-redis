@@ -111,7 +111,7 @@ app-start() {
     # Start child in the background. This is before the trap because
     # the app needs to be able to receive when the dyno broadcasts
     # SIGTERM on shutdown.
-    "$@" &
+    "$@" 
 
     # Translate SIGHUP to the appropriate signal to stop the child
     # (probably SIGTERM in this case). This *will* cancel the wait and may
@@ -129,7 +129,7 @@ app-start() {
     echo "$name" > $sentinel
 
     at "$name-end"
-  ) &
+  ) 
 
   at "$name-launched pid=$!"
 }
