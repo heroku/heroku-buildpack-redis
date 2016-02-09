@@ -28,4 +28,4 @@ mkdir -p $BUILD_DIR/bin
 cp "$BUILDPACK_DIR/bin/start-stunnel-interactive" $BUILD_DIR/bin/
 chmod +x $BUILD_DIR/bin/start-stunnel-interactive
 
-echo "-----> stunnel done"
+echo "-----> sshtunnel done"
