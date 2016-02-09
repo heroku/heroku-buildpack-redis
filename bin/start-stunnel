@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
 main() {
-  if ! is-enabled "${STUNNEL_ENABLED:-1}"; then
-    at stunnel-disabled
-    exec "$@"
-  fi
 
-  at stunnel-enabled
-  run-stunnel "$@"
+  at sshtunnel-enabled
+  run-sshtunnel "$@"
 }
 
-run-stunnel() {
-  declare sentinel=/tmp/stunnel-buildpack-wait
+run-sshtunnel() {
+  declare sentinel=/tmp/sshtunnel-buildpack-wait
   declare -A pids signals
 
   config-gen
@@ -21,7 +17,7 @@ run-stunnel() {
   mkfifo "$sentinel"
 
   # Start processes.
-  aux-start stunnel SIGINT stunnel4 vendor/stunnel/stunnel.conf
+  aux-start sshtunnel SIGINT ssh -F vendor/ssh/ssh_config -nNt
   app-start SIGTERM "$@"
   pid=$!
 
@@ -64,12 +60,12 @@ run-stunnel() {
 config-gen() {
   # Generate config files
   at config-gen-start
-  source bin/stunnel-conf.sh
+  source bin/sshtunnel-conf.sh
   at config-gen-end
 
-  for STUNNEL_URL in $STUNNEL_URLS; do
-    at "config-gen-override $STUNNEL_URL"
-    eval "$STUNNEL_URL=\$${STUNNEL_URL}_STUNNEL"
+  for SSHTUNNEL_URL in $SSHTUNNEL_URLS; do
+    at "config-gen-override $SSHTUNNEL_URL"
+    eval "$SSHTUNNEL_URL=\$${SSHTUNNEL_URL}_SSHTUNNEL"
   done
 }
 
@@ -139,7 +135,7 @@ app-start() {
 }
 
 at() {
-  echo "buildpack=stunnel at=$*"
+  echo "buildpack=sshtunnel at=$*"
 }
 
 is-enabled() {
