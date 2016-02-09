@@ -2,14 +2,14 @@
 
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) that
 allows an application to use an [stunnel](http://stunnel.org) to connect securely to
-Heroku Redis.  It is meant to be used in conjunction with other buildpacks.
+Heroku Redis and other stunnel'ed services.  It is meant to be used in conjunction with other buildpacks.
 
 ## Usage
 
 First you need to set this buildpack as your initial buildpack with:
 
 ```console
-$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-redis.git
+$ heroku buildpacks:set https://github.com/PeriscopeData/heroku-buildpack-redis.git
 ```
 
 Then you can add other buildpack(s) to compile your code like so:
@@ -31,6 +31,11 @@ a secure connection to Heroku Redis.  The `worker` process doesn't interact with
     web:    bin/start-stunnel bundle exec unicorn -p $PORT -c ./config/unicorn.rb -E $RACK_ENV
     worker: bundle exec rake worker
 
+To wrap your console in stunnel, you should use bin/start-stunnel-interactive, which won't run your command in the background, so stdin/stout still work.
+    $ cat Procfile
+    console:    bin/start-stunnel-interactive bundle exec rails console
+
+
 We're then ready to deploy to Heroku with an encrypted connection between the dynos and Heroku
 Redis:
 
@@ -38,7 +43,7 @@ Redis:
     ...
     -----> Fetching custom git buildpack... done
     -----> Multipack app detected
-    =====> Downloading Buildpack: https://github.com/heroku/heroku-buildpack-redis.git
+    =====> Downloading Buildpack: https://github.com/PeriscopeData/heroku-buildpack-redis.git
     =====> Detected Framework: stunnel
            Using stunnel version: 5.02
            Using stack version: cedar
@@ -54,22 +59,11 @@ Redis:
 
 ## Configuration
 
-The buildpack will install and configure stunnel to connect to `REDIS_URL` over a SSL connection. Prepend `bin/start-stunnel`
-to any process in the Procfile to run stunnel alongside that process.
+Add any URLs you want to be tunneled to the STUNNEL_URLS env var. To tunnel just redis, set STUNNEL_URLS=REDIS_URL
+Prepend `bin/start-stunnel` to any process in the Procfile to run stunnel alongside that process.
 
 ### Stunnel settings
 
 Some settings are configurable through app config vars at runtime:
 
 - ``STUNNEL_ENABLED``: Default to true, enable or disable stunnel.
-- ``STUNNEL_FORCE_TLS``: Default is unset. Set this var, to force TLSv1 on cedar-10.
-
-### Multiple Redis Instances
-
-If your application needs to connect to multiple Heroku Redis instances securely, this buildpack
-will automatically create an Stunnel for each color Heroku Redis config var (`HEROKU_REDIS_COLOR`)
-and the `REDIS_URL` config var. If you have Redis urls that aren't in one of these config vars you
-will need to explicitly tell the buildpack that you need an Stunnel by setting the `REDIS_STUNNEL_URLS`
-config var to a list of the appropriate config vars:
-
-    $ heroku config:add REDIS_STUNNEL_URLS="CACHE_URL SESSION_STORE_URL"
