@@ -9,16 +9,17 @@ Heroku Redis.  It is meant to be used in conjunction with other buildpacks.
 First you need to set this buildpack as your initial buildpack with:
 
 ```console
-$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-redis.git
+$ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-redis.git
 ```
 
-Then you can add other buildpack(s) to compile your code like so:
+Then confirm you are using this buildpack as well as your language buildpack like so:
 
 ```console
-$ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-ruby.git
+$ heroku buildpacks
+=== frozen-potato-95352 Buildpack URLs
+1. https://github.com/heroku/heroku-buildpack-redis.git
+2. heroku/python
 ```
-
-Choose the correct buildpack(s) for the language(s) used in your application.
 
 For more information on using multiple buildpacks check out [this devcenter article](https://devcenter.heroku.com/articles/using-multiple-buildpacks-for-an-app).
 
