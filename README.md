@@ -63,7 +63,6 @@ to any process in the Procfile to run stunnel alongside that process.
 Some settings are configurable through app config vars at runtime:
 
 - ``STUNNEL_ENABLED``: Default to true, enable or disable stunnel.
-- ``STUNNEL_FORCE_TLS``: Default is unset. Set this var, to force TLSv1 on cedar-10.
 
 ### Multiple Redis Instances
 
