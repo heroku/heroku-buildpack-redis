@@ -4,7 +4,7 @@ n=1
 
 mkdir -p /app/vendor/stunnel/var/run/stunnel/
 
-cat >> /app/vendor/stunnel/stunnel.conf << EOFEOF
+cat > /app/vendor/stunnel/stunnel.conf << EOFEOF
 foreground = yes
 
 pid = /app/vendor/stunnel/stunnel4.pid
