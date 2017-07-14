@@ -6,7 +6,10 @@ Heroku Redis.  It is meant to be used in conjunction with other buildpacks.
 
 ## Usage
 
-First you need to set this buildpack as your initial buildpack with:
+First, ensure your Heroku Redis addon is using a production tier plan. SSL is not
+available when using the hobby tier.
+
+Then set this buildpack as your initial buildpack with:
 
 ```console
 $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-redis.git
