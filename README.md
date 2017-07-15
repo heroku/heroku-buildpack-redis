@@ -64,7 +64,6 @@ Some settings are configurable through app config vars at runtime:
 
 - ``STUNNEL_ENABLED``: Default to true, enable or disable stunnel.
 - ``STUNNEL_LOGLEVEL``: Default is `notice`, set to `info` or `debug` for more verbose log output.
-- ``STUNNEL_FORCE_TLS``: Default is unset. Set this var, to force TLSv1 on cedar-10.
 
 ### Multiple Redis Instances
 
