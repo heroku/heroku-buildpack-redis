@@ -12,7 +12,7 @@ available when using the hobby tier.
 Then set this buildpack as your initial buildpack with:
 
 ```console
-$ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-redis.git
+$ heroku buildpacks:add -i 1 heroku/redis
 ```
 
 Then confirm you are using this buildpack as well as your language buildpack like so:
@@ -77,3 +77,9 @@ will need to explicitly tell the buildpack that you need an Stunnel by setting t
 config var to a list of the appropriate config vars:
 
     $ heroku config:add REDIS_STUNNEL_URLS="CACHE_URL SESSION_STORE_URL"
+    
+## Using the edge version of the buildpack
+
+The `heroku/redis` buildpack points to the latest stable version of the buildpack published in the [Buildpack Registry](https://devcenter.heroku.com/articles/buildpack-registry). To use the latest version of the buildpack (the code in this repository), run the following command:
+
+    $ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-redis
