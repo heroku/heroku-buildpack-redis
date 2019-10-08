@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-URLS=${REDIS_STUNNEL_URLS:-REDIS_URL `compgen -v HEROKU_REDIS`}
+URLS=${STUNNEL_URLS:-REDIS_URL `compgen -v HEROKU_REDIS`}
 n=1
 
 mkdir -p /app/vendor/stunnel/var/run/stunnel/
+
+cat > /app/vendor/stunnel/secrets.txt << EOFEOF
+client:${STUNNEL_CLIENT_SECRET}
+EOFEOF
 
 cat > /app/vendor/stunnel/stunnel.conf << EOFEOF
 foreground = yes
 
 pid = /app/vendor/stunnel/stunnel4.pid
 
-socket = r:TCP_NODELAY=1
-options = NO_SSLv3
-TIMEOUTidle = 86400
-ciphers = HIGH:!ADH:!AECDH:!LOW:!EXP:!MD5:!3DES:!SRP:!PSK:@STRENGTH
 debug = ${STUNNEL_LOGLEVEL:-notice}
 EOFEOF
 
@@ -26,7 +26,7 @@ do
   URI_PASS=${URI[2]}
   URI_HOST=${URI[3]}
   URI_PORT=${URI[4]}
-  STUNNEL_PORT=$((URI_PORT + 1))
+  STUNNEL_PORT=$((URI_PORT))
 
   echo "Setting ${URL}_STUNNEL config var"
   export ${URL}_STUNNEL=$URI_SCHEME://$URI_USER:$URI_PASS@127.0.0.1:637${n}
@@ -37,6 +37,8 @@ client = yes
 accept = 127.0.0.1:637${n}
 connect = $URI_HOST:$STUNNEL_PORT
 retry = ${STUNNEL_CONNECTION_RETRY:-"no"}
+ciphers = PSK
+PSKsecrets = /app/vendor/stunnel/secrets.txt
 EOFEOF
 
   let "n += 1"
