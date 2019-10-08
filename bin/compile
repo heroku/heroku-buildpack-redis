@@ -27,4 +27,9 @@ mkdir -p $BUILD_DIR/bin
 cp "$BUILDPACK_DIR/bin/start-stunnel" $BUILD_DIR/bin/
 chmod +x $BUILD_DIR/bin/start-stunnel
 
+echo "-----> Moving the run-stunnel script into app/bin"
+mkdir -p $BUILD_DIR/bin
+cp "$BUILDPACK_DIR/bin/run-stunnel" $BUILD_DIR/bin/
+chmod +x $BUILD_DIR/bin/run-stunnel
+
 echo "-----> stunnel done"
