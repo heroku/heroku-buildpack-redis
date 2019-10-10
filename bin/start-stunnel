@@ -10,15 +10,30 @@ main() {
   run-stunnel "$@"
 }
 
-run-stunnel() {
-  declare sentinel=/tmp/stunnel-buildpack-wait
-  declare -A pids signals
-
-  config-gen
-
+setup-sentinel() {
+  sentinel=$(mktemp)
   # Use named pipe to detect exit of any subprocess.
   rm -f "$sentinel"
   mkfifo "$sentinel"
+}
+
+cleanup() {
+  rm -f "$sentinel"
+  # Kill the auxiliary processes.
+  # Send each one SIGHUP which will be translated by the trap in aux-start.
+  declare name
+  for name in "${!pids[@]}"; do
+    at "kill-aux name=$name pid=${pids[$name]} signal=${signals[$name]}"
+    kill -SIGHUP "${pids[$name]}"
+  done
+
+  wait
+}
+
+run-stunnel() {
+  declare -A pids signals
+  config-gen
+  setup-sentinel
 
   # Start processes.
   aux-start stunnel SIGINT stunnel4 vendor/stunnel/stunnel.conf
@@ -52,13 +67,7 @@ run-stunnel() {
   at "wait-app pid=$pid"
   wait $pid
 
-  # Kill the auxiliary processes.
-  # Send each one SIGHUP which will be translated by the trap in aux-start.
-  declare name
-  for name in "${!pids[@]}"; do
-    at "kill-aux name=$name pid=${pids[$name]} signal=${signals[$name]}"
-    kill -SIGHUP "${pids[$name]}"
-  done
+  cleanup
 }
 
 config-gen() {
@@ -66,14 +75,6 @@ config-gen() {
   at config-gen-start
   source bin/stunnel-conf.sh
   at config-gen-end
-
-  # Overwrite config vars with stunnel targets
-  URLS=${REDIS_STUNNEL_URLS:-REDIS_URL `compgen -v HEROKU_REDIS | grep -v STUNNEL`}
-
-  for URL in $URLS; do
-    at "config-gen-override $URL"
-    eval "$URL=\$${URL}_STUNNEL"
-  done
 }
 
 aux-start() {
@@ -92,7 +93,7 @@ aux-start() {
     # Translate SIGHUP to the appropriate signal to stop the child (anything
     # except SIGTERM which is ignored). This *will* cancel the wait and may
     # lead to the outer subshell exiting before the aux process
-    trap "kill -$signal $!" SIGHUP
+    trap "kill-with-timeout  -${signal} $! 3" SIGHUP
 
     # Wait for child to finish, either by crash or by $signal
     wait
@@ -123,7 +124,8 @@ app-start() {
     # Translate SIGHUP to the appropriate signal to stop the child
     # (probably SIGTERM in this case). This *will* cancel the wait and may
     # lead to the outer subshell exiting before the app.
-    trap "kill -$signal $!" SIGHUP
+
+    trap "kill-with-timeout -${signal} $! 3" SIGHUP
 
     # Ignore SIGTERM because the dyno will broadcast it to all children --
     # there is no need to translate it.
@@ -143,6 +145,25 @@ app-start() {
 
 at() {
   echo "buildpack=stunnel at=$*"
+}
+
+kill-with-timeout() {
+    signal=${1}
+    victim=${2}
+    timeout=${3}
+
+    started_at=$(date +"%s") # current UNIX timestamp
+    timout_at=$((${started_at} + ${timeout}))
+
+    while true ; do
+      kill ${signal} ${victim} || break
+
+      sleep 0.1
+
+      [[ $(date +"%s") -gt ${timout_at} ]] && break
+    done
+
+    kill -0 ${victim} && kill -SIGKILL ${victim}
 }
 
 is-enabled() {

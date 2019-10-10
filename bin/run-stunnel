@@ -2,9 +2,17 @@
 
 source start-stunnel
 
-app-start() {
-    shift
-    "$@"
+run-stunnel() {
+  declare -A pids signals
+
+  config-gen
+  setup-sentinel
+
+  # Start processes.
+  aux-start stunnel SIGINT stunnel4 vendor/stunnel/stunnel.conf
+  "$@"
+
+  cleanup
 }
 
 [[ "$0" != "$BASH_SOURCE" ]] || main "$@"
