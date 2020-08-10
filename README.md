@@ -38,7 +38,7 @@ a secure connection to Heroku Redis.  The `worker` process doesn't interact with
 We're then ready to deploy to Heroku with an encrypted connection between the dynos and Heroku
 Redis:
 
-    $ git push heroku master
+    $ git push heroku main
     ...
     -----> Fetching custom git buildpack... done
     -----> Multipack app detected
@@ -77,7 +77,7 @@ will need to explicitly tell the buildpack that you need an Stunnel by setting t
 config var to a list of the appropriate config vars:
 
     $ heroku config:add REDIS_STUNNEL_URLS="CACHE_URL SESSION_STORE_URL"
-    
+
 ## Using the edge version of the buildpack
 
 The `heroku/redis` buildpack points to the latest stable version of the buildpack published in the [Buildpack Registry](https://devcenter.heroku.com/articles/buildpack-registry). To use the latest version of the buildpack (the code in this repository), run the following command:
