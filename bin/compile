@@ -15,7 +15,7 @@ BUILDPACK_DIR="$(dirname $(dirname $0))"
 
 echo "-----> Moving the configuration generation script into app/bin"
 mkdir -p $BUILD_DIR/bin
-if [[ "$STACK" == "cedar-14" || "$STACK" == "heroku-16" ]]; then
+if [[ "$STACK" == "cedar-14" ]]; then
   cp "$BUILDPACK_DIR/bin/legacy-stunnel-conf.sh" $BUILD_DIR/bin/stunnel-conf.sh
 else
   cp "$BUILDPACK_DIR/bin/stunnel-conf.sh" $BUILD_DIR/bin/stunnel-conf.sh
