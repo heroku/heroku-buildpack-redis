@@ -12,4 +12,4 @@ jobs:
  test:
    machine: true
    steps:
-     - run: ./support/test.sh "<< parameters.stack >>"
+     - run: ./support/test.sh \"<< parameters.stack >>\"
