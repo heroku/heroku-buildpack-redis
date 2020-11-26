@@ -4,7 +4,7 @@ jobs:
   test:
     parameters:
       stack:
-        type: string
+        type: "string"
     steps:
       - run: ./support/test.sh << parameters.stack >>
 
