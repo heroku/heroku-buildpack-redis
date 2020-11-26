@@ -1,18 +1,7 @@
 version: 2.1
 
 jobs:
-  test:
-    parameters:
-      stack:
-        type: string
-   machine: true
-   steps:
-     - run: ./support/test.sh \"<< parameters.stack >>\"
-
-workflows:
-  all-tests:
-    jobs:
-      - test:
-          matrix:
-            parameters:
-              stack: ["cedar-14", "heroku-16", "heroku-18", "heroku-20"]
+  test-heroku-16:
+    machine: true
+    steps:
+      - run: ./support/test.sh "heroku-16"
