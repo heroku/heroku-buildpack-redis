@@ -1,0 +1,15 @@
+version: 2.1
+
+workflows:
+  all-tests:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              stack: ["cedar-14", "heroku-16", "heroku-18", "heroku-20"]
+
+jobs:
+ test:
+   machine: true
+   steps:
+     - run: - ./support/test.sh "<< parameters.node-version >>"
