@@ -2,6 +2,7 @@ version: 2.1
 
 jobs:
   test:
+    machine: true
     parameters:
       stack:
         type: "string"
@@ -13,10 +14,14 @@ workflows:
   all-tests:
     jobs:
       - test:
-        stack: "cedar-14"
+          name: Cedar-14 Test
+          stack: cedar-14
       - test:
-        stack: "heroku-16"
+          name: Heroku-16 Test
+          stack: heroku-16
       - test:
-        stack: "heroku-18"
+          name: Heroku-18 Test
+          stack: heroku-18
       - test:
-        stack: "heroku-20"
+          name: Heroku-20 Test
+          stack: heroku-20
