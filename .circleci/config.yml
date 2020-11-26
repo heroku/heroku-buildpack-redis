@@ -7,7 +7,7 @@ jobs:
       stack:
         type: "string"
     steps:
-      - run: ./support/test.sh << parameters.stack >>
+      - run: bash support/test.sh << parameters.stack >>
 
 workflows:
   version: 2
