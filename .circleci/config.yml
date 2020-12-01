@@ -1,0 +1,28 @@
+version: 2.1
+
+jobs:
+  test:
+    machine: true
+    parameters:
+      stack:
+        type: "string"
+    steps:
+      - checkout
+      - run: bash support/test.sh << parameters.stack >>
+
+workflows:
+  version: 2
+  all-tests:
+    jobs:
+      - test:
+          name: Cedar-14 Test
+          stack: cedar-14
+      - test:
+          name: Heroku-16 Test
+          stack: heroku-16
+      - test:
+          name: Heroku-18 Test
+          stack: heroku-18
+      - test:
+          name: Heroku-20 Test
+          stack: heroku-20
