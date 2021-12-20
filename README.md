@@ -1,4 +1,4 @@
-# Heroku buildpack: Redis
+# Heroku buildpack: Redis Stunnel
 
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) that
 allows an application to use an [stunnel](http://stunnel.org) to connect securely to
@@ -20,7 +20,7 @@ Then confirm you are using this buildpack as well as your language buildpack lik
 ```console
 $ heroku buildpacks
 === frozen-potato-95352 Buildpack URLs
-1. https://github.com/heroku/heroku-buildpack-redis.git
+1. heroku/redis
 2. heroku/python
 ```
 
@@ -43,13 +43,13 @@ Redis:
     -----> Fetching custom git buildpack... done
     -----> Multipack app detected
     =====> Downloading Buildpack: https://github.com/heroku/heroku-buildpack-redis.git
-    =====> Detected Framework: stunnel
+    =====> Detected Framework: Redis-stunnel
            Using stunnel version: 5.02
            Using stack version: cedar
     -----> Fetching and vendoring stunnel into slug
     -----> Moving the configuration generation script into app/bin
     -----> Moving the start-stunnel script into app/bin
-    -----> stunnel done
+    -----> Redis-stunnel done
     =====> Downloading Buildpack: https://github.com/heroku/heroku-buildpack-ruby.git
     =====> Detected Framework: Ruby/Rack
     -----> Using Ruby version: ruby-2.2.2
