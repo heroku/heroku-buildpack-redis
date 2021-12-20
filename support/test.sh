@@ -7,13 +7,7 @@ set -euo pipefail
 STACK="${1}"
 
 RUNTIME_IMAGE="heroku/${STACK/-/:}"
-
-if [[ "${STACK}" == "cedar-14" ]]; then
-    BUILD_IMAGE="${RUNTIME_IMAGE}"
-else
-    BUILD_IMAGE="${RUNTIME_IMAGE}-build"
-fi
-
+BUILD_IMAGE="${RUNTIME_IMAGE}-build"
 OUTPUT_IMAGE="redis-stunnel-test-${STACK}"
 
 echo "Building buildpack on stack ${STACK}..."
