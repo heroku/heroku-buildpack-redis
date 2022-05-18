@@ -20,3 +20,6 @@ workflows:
       - test:
           name: Heroku-20 Test
           stack: heroku-20
+      - test:
+          name: Heroku-22 Test
+          stack: heroku-22
