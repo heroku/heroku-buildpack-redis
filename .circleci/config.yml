@@ -2,7 +2,8 @@ version: 2.1
 
 jobs:
   test:
-    machine: true
+    machine:
+      image: ubuntu-2004:current
     parameters:
       stack:
         type: "string"
@@ -20,3 +21,6 @@ workflows:
       - test:
           name: Heroku-20 Test
           stack: heroku-20
+      - test:
+          name: Heroku-22 Test
+          stack: heroku-22
