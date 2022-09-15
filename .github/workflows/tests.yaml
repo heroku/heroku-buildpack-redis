@@ -1,0 +1,20 @@
+name: Tests
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  tests:
+    strategy:
+      matrix:
+        stack:
+          - heroku-18
+          - heroku-20
+          - heroku-22
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: bash support/test.sh ${{ matrix.stack }}
