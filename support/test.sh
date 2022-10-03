@@ -25,7 +25,7 @@ echo "Checking the start-stunnel wrapper works and stunnel can start..."
 # testing this annoying (eg https://github.com/heroku/heroku-buildpack-redis/issues/13
 # and hangs if I try to capture the output), but this is better than nothing for now.
 TEST_COMMAND="bin/start-stunnel bash -c 'sleep 2 && env && cat /app/vendor/stunnel/stunnel.conf'"
-docker run --rm -it --env 'REDIS_URL=redis://:secret@example.tld:1234' "${OUTPUT_IMAGE}" bash -c "set -ex && ${TEST_COMMAND}"
-docker run --rm -it --env 'REDIS_URL=redis://h:secret@example.tld:1234' "${OUTPUT_IMAGE}" bash -c "set -ex && ${TEST_COMMAND}"
+docker run --rm -t --env 'REDIS_URL=redis://:secret@example.tld:1234' "${OUTPUT_IMAGE}" bash -c "set -ex && ${TEST_COMMAND}"
+docker run --rm -t --env 'REDIS_URL=redis://h:secret@example.tld:1234' "${OUTPUT_IMAGE}" bash -c "set -ex && ${TEST_COMMAND}"
 
 echo "Success!"
