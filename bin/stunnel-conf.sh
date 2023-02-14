@@ -32,6 +32,8 @@ do
     WITHOUT_USERNAME=true
   fi
   URI=( $PARTS )
+
+
   if [ "$WITHOUT_USERNAME" = true ] ; then
     URI_SCHEME=${URI[0]}
     URI_PASS=${URI[1]}
