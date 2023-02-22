@@ -71,8 +71,13 @@ config-gen() {
   URLS=${REDIS_STUNNEL_URLS:-REDIS_URL `compgen -v HEROKU_REDIS | grep -v STUNNEL`}
 
   for URL in $URLS; do
-    at "config-gen-override $URL"
-    eval "$URL=\$${URL}_STUNNEL"
+    eval URL_VALUE=\$$URL
+    if [[ $URL_VALUE =~ rediss://* ]]; then
+      at "config-gen-skip $URL"
+    else
+      at "config-gen-override $URL"
+      eval "$URL=\$${URL}_STUNNEL"
+    fi
   done
 }
 
