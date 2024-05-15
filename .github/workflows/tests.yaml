@@ -14,7 +14,8 @@ jobs:
           - heroku-18
           - heroku-20
           - heroku-22
+          - heroku-24
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: bash support/test.sh ${{ matrix.stack }}
