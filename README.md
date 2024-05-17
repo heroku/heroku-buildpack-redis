@@ -4,9 +4,9 @@ This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) th
 allows an application to use an [stunnel](http://stunnel.org) to connect securely to
 Heroku Redis.  It is meant to be used in conjunction with other buildpacks.
 
-**This buildpack is only for use with Heroku Redis 4 and 5. For Heroku Redis 6 and newer, use its built-in TLS support instead.**
-
-**For more information, see [Securing Heroku Redis](https://devcenter.heroku.com/articles/securing-heroku-redis).**
+> [!WARNING]
+> This buildpack is not compatible with `heroku-24`+ and is not needed for Redis 6+, which supports native TLS.
+> For more information, see [Securing Heroku Redis](https://devcenter.heroku.com/articles/heroku-redis#security-and-compliance).
 
 ## Usage
 

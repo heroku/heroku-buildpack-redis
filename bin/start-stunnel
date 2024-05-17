@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 
 main() {
-  STUNNEL=$(command -v stunnel4)
-
-  if [ -z $STUNNEL ]; then
-      echo "buildpack=stunnel at=error stunnel not detected! stunnel not supported on heroku-24+"
-      echo "buildpack=stunnel at=error this buildpack is not required for Redis 6+: https://devcenter.heroku.com/articles/heroku-redis#security-and-compliance"
-      exit 1
-  fi
-
   if ! is-enabled "${STUNNEL_ENABLED:-1}"; then
     at stunnel-disabled
     exec "$@"
