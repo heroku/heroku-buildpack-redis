@@ -5,6 +5,7 @@ FROM $BUILD_IMAGE AS builder
 ARG STACK
 
 # Emulate the platform where root access is not available
+USER root
 RUN useradd -d /app non-root-user
 RUN mkdir -p /app /cache /env
 RUN chown non-root-user /app /cache /env
@@ -20,6 +21,7 @@ RUN env -i PATH=$PATH HOME=$HOME STACK=$STACK /buildpack/bin/compile /app /cache
 
 
 FROM $RUNTIME_IMAGE
+USER root
 RUN useradd -d /app non-root-user
 USER non-root-user
 COPY --from=builder --chown=non-root-user /app /app
