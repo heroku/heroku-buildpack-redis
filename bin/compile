@@ -15,11 +15,11 @@ BUILDPACK_DIR="$(dirname $(dirname $0))"
 
 if ! command -v stunnel4 > /dev/null; then
 
-    echo "! This buildpack uses stunnel, which isn’t supported on heroku-24 and later." >&2
-    echo "! You don’t need this buildpack for Redis 6+. Remove it with the command:" >&2
-    echo "! $ heroku buildpacks:remove heroku/redis" >&2
-    echo "! To use Redis’ native TLS support, see https://devcenter.heroku.com/articles/heroku-redis#security-and-compliance:" >&2
-    echo "! https://devcenter.heroku.com/articles/heroku-redis#security-and-compliance" >&2
+    echo " !     This buildpack uses stunnel, which isn’t supported on heroku-24 and later." >&2
+    echo " !     You don’t need this buildpack for Redis 6+. Remove it with the command:" >&2
+    echo " !     $ heroku buildpacks:remove heroku/redis" >&2
+    echo " !     To use Redis’ native TLS support, see:" >&2
+    echo " !     https://devcenter.heroku.com/articles/heroku-redis#security-and-compliance" >&2
 
     exit 1
 fi
