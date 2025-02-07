@@ -1,5 +1,10 @@
 # Heroku buildpack: Redis Stunnel
 
+> [!CAUTION]
+> This buildpack has reached end-of-life, as [Heroku KVS](https://devcenter.heroku.com/articles/heroku-redis) only supports native TLS.
+>
+> We encourage customers to remove this buildpack using `heroku buildpacks:remove heroku/redis -a <app>`.
+
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) that
 allows an application to use an [stunnel](http://stunnel.org) to connect securely to
 Heroku Redis.  It is meant to be used in conjunction with other buildpacks.
